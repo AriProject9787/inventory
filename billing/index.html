@@ -1,50 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cake Shop Billing Software</title>
   <style>
+    * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #fdf6f0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #fffaf5;
       display: flex;
+      color: #333;
     }
     .sidebar {
-      width: 220px;
-      background: #8B0000;
+      width: 240px;
+      background: #6a0d0d;
       color: white;
       height: 100vh;
       padding-top: 20px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     }
     .sidebar h2 {
       text-align: center;
       margin-bottom: 20px;
+      font-size: 1.5em;
     }
     .sidebar ul {
       list-style: none;
       padding: 0;
     }
     .sidebar li {
-      padding: 10px 20px;
+      padding: 12px 20px;
       cursor: pointer;
+      transition: background 0.3s ease;
     }
     .sidebar li:hover {
-      background: #a30000;
+      background: #8b0000;
     }
     .container {
       flex: 1;
-      padding: 20px;
+      padding: 30px;
+      overflow-y: auto;
     }
     h1 {
       text-align: center;
       color: #8B0000;
     }
-    select, input[type="number"] {
+    select, input[type="number"], input[type="text"] {
       width: 100%;
-      padding: 8px;
+      padding: 10px;
       margin: 10px 0;
+      border-radius: 4px;
+      border: 1px solid #ccc;
     }
     table {
       width: 100%;
@@ -52,16 +60,17 @@
       margin-top: 20px;
     }
     table, th, td {
-      border: 1px solid #ccc;
+      border: 1px solid #ddd;
     }
     th, td {
-      padding: 10px;
+      padding: 12px;
       text-align: center;
     }
     #totalAmount {
-      font-size: 20px;
+      font-size: 22px;
       margin-top: 20px;
       font-weight: bold;
+      text-align: right;
     }
     button {
       background-color: #8B0000;
@@ -71,9 +80,19 @@
       border-radius: 5px;
       cursor: pointer;
       margin-top: 10px;
+      margin-right: 10px;
     }
     button:hover {
       background-color: #a30000;
+    }
+    .custom-section {
+      display: none;
+      border-top: 2px solid #8b0000;
+      margin-top: 30px;
+      padding-top: 20px;
+    }
+    .actions {
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -88,6 +107,7 @@
       <li onclick="filterCategory('Milkshakes')">Milkshakes</li>
       <li onclick="filterCategory('Pastry Cakes')">Pastry Cakes</li>
       <li onclick="filterCategory('All')">Show All</li>
+      <li onclick="filterCategory('Custom')">Custom Cakes</li>
     </ul>
   </div>
 
@@ -95,15 +115,25 @@
     <h1>Cake Shop Billing</h1>
 
     <label for="item">Select Item:</label>
-    <select id="item">
-      <option value="">--Choose--</option>
-    </select>
+    <select id="item"><option value="">--Choose--</option></select>
 
     <label for="quantity">Quantity:</label>
-    <input type="number" id="quantity" min="1" value="1">
+    <input type="number" id="quantity" min="1" value="1"/>
 
-    <button onclick="addItem()">Add to Bill</button>
-    <button onclick="printBill()">Print Bill</button>
+    <div class="custom-section" id="customSection">
+      <h3>Add Custom Cake</h3>
+      <label for="customItemName">Item Name:</label>
+      <input type="text" id="customItemName" placeholder="e.g., Special Chocolate Cake"/>
+      <label for="customItemPrice">Unit Price (₹):</label>
+      <input type="number" id="customItemPrice" min="1" placeholder="e.g., 350"/>
+    </div>
+
+    <div class="actions">
+      <button onclick="addItem()">Add to Bill</button>
+      <button onclick="addCustomItem()">Add Custom Item</button>
+      <button onclick="printBill()">Print Bill</button>
+      <button onclick="exportCSV()">Export CSV</button>
+    </div>
 
     <table>
       <thead>
@@ -119,42 +149,37 @@
     </table>
 
     <div id="totalAmount">Total: ₹0</div>
+
+    <div id="dailyReport" style="margin-top: 40px; border-top: 2px solid #8B0000; padding-top: 20px;">
+      <h3>Today's Sales Report</h3>
+      <div id="todaySalesTotal">Total Sales Today: ₹0</div>
+    </div>
   </div>
 
   <script>
     const allItems = {
-      "Fresh Cream Cakes": {
-        "Vanilla Delight 0.5kg": 280,
-        "Black Forest 1kg": 600,
-        "Choco Truffle 0.5kg": 450
-      },
-      "Pizza": {
-        "Paneer Pizza": 220,
-        "Chilli Chicken Pizza": 260,
-        "Cheese Pizza": 160
-      },
-      "Sandwiches": {
-        "American Fresh Chicken Sandwich": 140,
-        "Chicken Cheese Sandwich": 100
-      },
-      "Desserts": {
-        "Chocolate Brownie with Ice Cream": 90
-      },
-      "Milkshakes": {
-        "Strawberry Milkshake": 100
-      },
-      "Pastry Cakes": {
-        "Chocolate Truffle Pastry": 70
-      }
+      "Fresh Cream Cakes": { "Vanilla Delight 0.5kg": 280, "Black Forest 1kg": 600, "Choco Truffle 0.5kg": 450 },
+      "Pizza": { "Paneer Pizza": 220, "Chilli Chicken Pizza": 260, "Cheese Pizza": 160 },
+      "Sandwiches": { "American Fresh Chicken Sandwich": 140, "Chicken Cheese Sandwich": 100 },
+      "Desserts": { "Chocolate Brownie with Ice Cream": 90 },
+      "Milkshakes": { "Strawberry Milkshake": 100 },
+      "Pastry Cakes": { "Chocolate Truffle Pastry": 70 }
     };
 
     let grandTotal = 0;
     const itemSelect = document.getElementById("item");
+    const customSection = document.getElementById("customSection");
 
     function populateItems(category) {
       itemSelect.innerHTML = '<option value="">--Choose--</option>';
-      const categories = category === 'All' ? allItems : { [category]: allItems[category] };
+      if (category === 'Custom') {
+        customSection.style.display = 'block';
+        return;
+      } else {
+        customSection.style.display = 'none';
+      }
 
+      const categories = category === 'All' ? allItems : { [category]: allItems[category] };
       for (const [cat, items] of Object.entries(categories)) {
         for (const [name, price] of Object.entries(items)) {
           const option = document.createElement("option");
@@ -169,10 +194,16 @@
       populateItems(category);
     }
 
+    function saveSale(itemName, unitPrice, quantity, total) {
+      const today = new Date().toLocaleDateString();
+      const sales = JSON.parse(localStorage.getItem("sales")) || [];
+      sales.push({ date: today, item: itemName, unitPrice, quantity, total });
+      localStorage.setItem("sales", JSON.stringify(sales));
+    }
+
     function addItem() {
       const itemName = itemSelect.value;
       const quantity = parseInt(document.getElementById("quantity").value);
-
       if (!itemName || quantity <= 0) {
         alert("Please select a valid item and quantity.");
         return;
@@ -197,6 +228,38 @@
       `;
       document.getElementById("billTable").appendChild(row);
       updateTotal(total);
+      saveSale(itemName, itemPrice, quantity, total);
+      calculateTodaySales();
+      itemSelect.value = "";
+      document.getElementById("quantity").value = 1;
+    }
+
+    function addCustomItem() {
+      const customName = document.getElementById("customItemName").value.trim();
+      const customPrice = parseFloat(document.getElementById("customItemPrice").value);
+      const quantity = parseInt(document.getElementById("quantity").value);
+
+      if (!customName || isNaN(customPrice) || customPrice <= 0 || quantity <= 0) {
+        alert("Please enter valid custom item details and quantity.");
+        return;
+      }
+
+      const total = customPrice * quantity;
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${customName}</td>
+        <td>₹${customPrice}</td>
+        <td>${quantity}</td>
+        <td>₹${total}</td>
+        <td><button onclick="removeItem(this, ${total})">Remove</button></td>
+      `;
+      document.getElementById("billTable").appendChild(row);
+      updateTotal(total);
+      saveSale(customName, customPrice, quantity, total);
+      calculateTodaySales();
+
+      document.getElementById("customItemName").value = "";
+      document.getElementById("customItemPrice").value = "";
     }
 
     function updateTotal(amount) {
@@ -211,6 +274,14 @@
       document.getElementById("totalAmount").textContent = `Total: ₹${grandTotal}`;
     }
 
+    function calculateTodaySales() {
+      const today = new Date().toLocaleDateString();
+      const sales = JSON.parse(localStorage.getItem("sales")) || [];
+      const todaySales = sales.filter(sale => sale.date === today);
+      const total = todaySales.reduce((sum, sale) => sum + sale.total, 0);
+      document.getElementById("todaySalesTotal").textContent = `Total Sales Today: ₹${total}`;
+    }
+
     function printBill() {
       const printContent = document.querySelector(".container").innerHTML;
       const originalContent = document.body.innerHTML;
@@ -220,8 +291,30 @@
       window.location.reload();
     }
 
-    // Load all items initially
-    window.onload = () => populateItems("All");
+    function exportCSV() {
+      const table = document.getElementById("billTable");
+      let csv = "Item,Unit Price,Quantity,Total\n";
+      for (const row of table.rows) {
+        const cells = row.querySelectorAll("td");
+        if (cells.length === 5) {
+          csv += `${cells[0].innerText},${cells[1].innerText},${cells[2].innerText},${cells[3].innerText}\n`;
+        }
+      }
+      csv += `,,,Total: ₹${grandTotal}`;
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.setAttribute("href", URL.createObjectURL(blob));
+      link.setAttribute("download", "CakeShop_Bill.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    window.onload = () => {
+      populateItems("All");
+      calculateTodaySales();
+    };
   </script>
 </body>
 </html>
