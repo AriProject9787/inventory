@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cake Shop Billing Software</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fdf6f0;
+      display: flex;
+    }
+    .sidebar {
+      width: 220px;
+      background: #8B0000;
+      color: white;
+      height: 100vh;
+      padding-top: 20px;
+    }
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar li {
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+    .sidebar li:hover {
+      background: #a30000;
+    }
+    .container {
+      flex: 1;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #8B0000;
+    }
+    select, input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin: 10px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+    #totalAmount {
+      font-size: 20px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    button {
+      background-color: #8B0000;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #a30000;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Categories</h2>
+    <ul>
+      <li onclick="filterCategory('Fresh Cream Cakes')">Fresh Cream Cakes</li>
+      <li onclick="filterCategory('Pizza')">Pizza</li>
+      <li onclick="filterCategory('Sandwiches')">Sandwiches</li>
+      <li onclick="filterCategory('Desserts')">Desserts</li>
+      <li onclick="filterCategory('Milkshakes')">Milkshakes</li>
+      <li onclick="filterCategory('Pastry Cakes')">Pastry Cakes</li>
+      <li onclick="filterCategory('All')">Show All</li>
+    </ul>
+  </div>
+
+  <div class="container">
+    <h1>Cake Shop Billing</h1>
+
+    <label for="item">Select Item:</label>
+    <select id="item">
+      <option value="">--Choose--</option>
+    </select>
+
+    <label for="quantity">Quantity:</label>
+    <input type="number" id="quantity" min="1" value="1">
+
+    <button onclick="addItem()">Add to Bill</button>
+    <button onclick="printBill()">Print Bill</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Unit Price</th>
+          <th>Quantity</th>
+          <th>Total</th>
+          <th>Remove</th>
+        </tr>
+      </thead>
+      <tbody id="billTable"></tbody>
+    </table>
+
+    <div id="totalAmount">Total: ₹0</div>
+  </div>
+
+  <script>
+    const allItems = {
+      "Fresh Cream Cakes": {
+        "Vanilla Delight 0.5kg": 280,
+        "Black Forest 1kg": 600,
+        "Choco Truffle 0.5kg": 450
+      },
+      "Pizza": {
+        "Paneer Pizza": 220,
+        "Chilli Chicken Pizza": 260,
+        "Cheese Pizza": 160
+      },
+      "Sandwiches": {
+        "American Fresh Chicken Sandwich": 140,
+        "Chicken Cheese Sandwich": 100
+      },
+      "Desserts": {
+        "Chocolate Brownie with Ice Cream": 90
+      },
+      "Milkshakes": {
+        "Strawberry Milkshake": 100
+      },
+      "Pastry Cakes": {
+        "Chocolate Truffle Pastry": 70
+      }
+    };
+
+    let grandTotal = 0;
+    const itemSelect = document.getElementById("item");
+
+    function populateItems(category) {
+      itemSelect.innerHTML = '<option value="">--Choose--</option>';
+      const categories = category === 'All' ? allItems : { [category]: allItems[category] };
+
+      for (const [cat, items] of Object.entries(categories)) {
+        for (const [name, price] of Object.entries(items)) {
+          const option = document.createElement("option");
+          option.value = name;
+          option.textContent = `${name} - ₹${price}`;
+          itemSelect.appendChild(option);
+        }
+      }
+    }
+
+    function filterCategory(category) {
+      populateItems(category);
+    }
+
+    function addItem() {
+      const itemName = itemSelect.value;
+      const quantity = parseInt(document.getElementById("quantity").value);
+
+      if (!itemName || quantity <= 0) {
+        alert("Please select a valid item and quantity.");
+        return;
+      }
+
+      let itemPrice = 0;
+      for (const catItems of Object.values(allItems)) {
+        if (itemName in catItems) {
+          itemPrice = catItems[itemName];
+          break;
+        }
+      }
+
+      const total = itemPrice * quantity;
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${itemName}</td>
+        <td>₹${itemPrice}</td>
+        <td>${quantity}</td>
+        <td>₹${total}</td>
+        <td><button onclick="removeItem(this, ${total})">Remove</button></td>
+      `;
+      document.getElementById("billTable").appendChild(row);
+      updateTotal(total);
+    }
+
+    function updateTotal(amount) {
+      grandTotal += amount;
+      document.getElementById("totalAmount").textContent = `Total: ₹${grandTotal}`;
+    }
+
+    function removeItem(button, amount) {
+      const row = button.parentElement.parentElement;
+      row.remove();
+      grandTotal -= amount;
+      document.getElementById("totalAmount").textContent = `Total: ₹${grandTotal}`;
+    }
+
+    function printBill() {
+      const printContent = document.querySelector(".container").innerHTML;
+      const originalContent = document.body.innerHTML;
+      document.body.innerHTML = printContent;
+      window.print();
+      document.body.innerHTML = originalContent;
+      window.location.reload();
+    }
+
+    // Load all items initially
+    window.onload = () => populateItems("All");
+  </script>
+</body>
+</html>
