@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cake Shop Production Inventory</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Cake Shop Resource Inventory</h1>
+
+    <div class="form-section">
+      <input type="text" id="productName" placeholder="Product Name" />
+      <input type="number" id="noitems" placeholder="Production Quantity" />
+        <select id="useSelect">
+            <option value="">Select Use</option>
+            <option value="Production">Production</option>
+            <option value="Sales">Sales</option>
+            <option value="branch1">Branch1</option>
+            <option value="branch2">Branch2</option>
+        </select>
+      <button onclick="addOrUpdateResource()">Add / Update</button>
+    </div>
+
+    <h2>Inventory</h2>
+    <table>
+      <thead>
+  <tr>
+    <th>Product Name</th>
+    <th>Production</th>
+    <th>Sales</th>
+    <th>Balance</th>
+    <th>Branch1</th>
+    <th>Branch2</th>
+    <th>Delete</th>
+  </tr>
+</thead>
+
+      <tbody id="inventoryTable"></tbody>
+    </table>
+  </div>
+
+  <script src="script1.js"></script>
+</body>
+</html>
