@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    
+    <link rel="stylesheet" href="style1.css">
+    <script src="theme-toggle.js" defer></script>
+    
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <div class="menu-toggle" id="menu-toggle">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <h2>BrownieFactory</h2>
+            
+        </div>
+        <nav>
+            <ul id="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="cart.html">Cart</a></li>
+                <li><a href="admin.html">Admin</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="../index.html">Logout</a></li>
+                <button id="theme-toggle">🌙/☀️</button>
+            </ul>
+        </nav>
+    </header>
+    <div id="profile">
+        <h1>Please Edit your Profile</h1>
+        <a href="Eprofile.html"><button id="but">Edit Profile</button></a>
+        
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAGYH0CeVCQDESjcJdvikoKmeOyhLCYoyk",
+            authDomain: "grand-lekage-web.firebaseapp.com",
+            projectId: "grand-lekage-web",
+            storageBucket: "grand-lekage-web.appspot.com",
+            messagingSenderId: "185245033432",
+            appId: "1:185245033432:web:258e597d6b2b7ad46f48ad",
+            measurementId: "G-B4GCWFR374"
+        };
+      
+const app = initializeApp(firebaseConfig);
+        
+// Use this if you're using Firestore
+const db = getDatabase(app);
+// Fetch user details
+console.log(app)
+const dbref=ref(db,'users/')
+var uid=sessionStorage.getItem("UserId");
+get(child(dbref, `/${uid}`)).then((snapshot) => {
+            if (snapshot.exists()) {
+            const data = snapshot.val(); 
+            console.log(data.Name);
+            const articleContainer = document.getElementById('profile');
+            articleContainer.innerHTML = `
+            <img src="${data.ImageUrl}" alt="Wrong Image Link" id="img" class="img">
+            <a href="Eprofile.html"><button id="but">Edit Profile</button></a>
+            
+            <small  id="about">Don’t Copy, Pick Your Own Style 😊</small>
+                
+                           <table>
+                                <tr><td><h4>Name:</h4></td><td><h4>${data.Name}</h4></td></tr>
+                                <tr><td><h4>Email:</h4></td><td><h4>${data.Email}</h4></td></tr>
+                                <tr><td><h4>Phone Number:</h4></td><td><h4>${data.Phonenumber}</h4></td></tr>
+                                <tr><td><h4>DOB:</h4></td><td><h4>${data.Dob}</h4></td></tr>
+                            
+                            </table>
+
+
+
+
+            
+            `;
+
+            }});
+
+      
+    </script>
+    
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const navLinks = document.getElementById('nav-links');
+        
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
+    <script src="verify.js"></script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsUpload</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <section id="upload-news">
+        <h2>Upload Your Product</h2>
+            <form id="uploadForm">
+                <label for="product">Product Name:</label>
+                <input type="text" id="product" name="product" required>
+
+                <label for="price">Price:</label>
+                <input type="number" id="price" name="price" >
+
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" required>
+
+                <label for="content">Content:</label>
+                <textarea id="content" name="content" required></textarea>
+                
+                <label for="imgurl">Image Url:</label>
+                <input type="text" id="imgurl" name="imgurl" >
+
+                <label for="vidurl">Video Url:</label>
+                <input type="text" id="vidurl" name="vidurl" >
+
+               
+                <button type="submit">Submit</button>
+            </form>
+    </section>
+
+    <script type="module">
+        const cond = sessionStorage.getItem("isAdmin");
+  if (cond !== "true") {
+      alert("You are not logged in as admin");
+      window.location.href = "../admin.html";
+  }
+        // Import the firebase library
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+        import { getDatabase, ref,set, child, get} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        
+        //firebase api key
+        
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAGYH0CeVCQDESjcJdvikoKmeOyhLCYoyk",
+            authDomain: "grand-lekage-web.firebaseapp.com",
+            projectId: "grand-lekage-web",
+            storageBucket: "grand-lekage-web.appspot.com",
+            messagingSenderId: "185245033432",
+            appId: "1:185245033432:web:258e597d6b2b7ad46f48ad",
+            measurementId: "G-B4GCWFR374"
+        };
+
+        // Initialize Firebase variable
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const dbref=ref(db,'products/')
+        console.log(app);
+        console.log(dbref);
+        
+ 
+        //initialize news content variable
+        const form = document.getElementById('uploadForm');
+        const product = document.getElementById('product').value;
+        const subject = document.getElementById('subject').value;
+        const content = document.getElementById('content').value;
+        const price = document.getElementById('price').value;
+        //Writing data on database
+        function uploadNews(datetime,price,product, subject, content,imgurl,vidurl){
+            set(ref(db, 'products/' + product), {
+                Datetime:datetime,
+                Price:price,
+                product: product,
+                Subject: subject,
+                Content: content,
+                ImgUrl: imgurl,
+                VidUrl: vidurl
+            });
+        }
+        //submit button onclick event upload news
+        form.onsubmit=()=>{
+            const product = document.getElementById('product').value;
+            const subject = document.getElementById('subject').value;
+            const imgurl = document.getElementById('imgurl').value;
+            const vidurl = document.getElementById('vidurl').value;
+            const content = document.getElementById('content').value;
+            //get date and time
+            var currentdate = new Date();
+            //var datetime = currentdate.getDay() + "-" + currentdate.getMonth() + "-" + currentdate.getFullYear() + " @ " + currentdate.getHours() + ":" + currentdate.getMinutes() ;
+            var datetime=new Date().toLocaleTimeString([], {day:"2-digit",month:"2-digit",year:"numeric",hour: '2-digit', minute: "2-digit"});
+
+  
+            uploadNews(datetime,price,product,subject,content,imgurl,vidurl)
+        }
+
+     
+
+
+    </script>
+
+
+
+
+
+</body>
+</html>

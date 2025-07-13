@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <title>Grand-Leak.com</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="body">
+    
+    
+    <main id="main">
+        <section id="top-news">
+            <h2>Products</h2>
+            <div id="product">
+                <!-- News articles will be dynamically added here -->
+            </div>
+            <div class="pagination">
+                <button id="prev-btn" disabled>Previous</button>
+                <span id="page-info"></span>
+                <button id="next-btn" disabled>Next</button>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <!-- <a href="https://www.instagram.com/haris984290/"><div class="instagram"><ion-icon name="logo-instagram"></ion-icon></div></a> -->
+        <p><span class="highlight">&copy; 2024 News Portal.</span> All rights reserved.</p>
+    </footer>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        //import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        //import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    
+        const firebaseConfig = {
+            apiKey: "AIzaSyAGYH0CeVCQDESjcJdvikoKmeOyhLCYoyk",
+            authDomain: "grand-lekage-web.firebaseapp.com",
+            projectId: "grand-lekage-web",
+            storageBucket: "grand-lekage-web.appspot.com",
+            messagingSenderId: "185245033432",
+            appId: "1:185245033432:web:258e597d6b2b7ad46f48ad",
+            measurementId: "G-B4GCWFR374"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        //const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        //const auth = getAuth();
+
+        let allArticles = [];
+        let currentPage = 1;
+        const articlesPerPage = 2;
+
+        const newsContainer = document.getElementById('product');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const pageInfo = document.getElementById('page-info');
+
+        // Fetch articles from Firebase
+        function fetchArticles() {
+            const dbRef = ref(db, 'products/');
+            get(dbRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    allArticles = Object.values(snapshot.val());
+                    displayArticles();
+                    updatePaginationControls();
+                } else {
+                    console.log("No data available");
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+        }
+
+        // Display articles based on the current page
+        function displayArticles() {
+            newsContainer.innerHTML = '';
+            const startIndex = (currentPage - 1) * articlesPerPage;
+            const endIndex = startIndex + articlesPerPage;
+            const currentArticles = allArticles.slice(startIndex, endIndex);
+
+            currentArticles.forEach(article => {
+                const articleHTML = `
+                    <article class="artical">
+                        <div class="newsArtical">
+                            <table>
+                                <tr>
+                                    <td class="td1">
+                                        <small class="newsSmall">${article.Datetime}</small>
+                                        <img src="${article.ImgUrl}" class="newsImg">
+                                        
+                                        <a href="news-article.html?title=${article.product}"><h4 class="newsTitle">${article.product}</h4></a>
+                                    </td>
+                                    <td class="td2">
+                                        <h5 class="newsSubject">${article.Subject}</h5>
+                                        <p class="newsContent">${article.Content}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </article>
+                `;
+                newsContainer.innerHTML += articleHTML;
+            });
+        }
+
+        // Update pagination controls
+        function updatePaginationControls() {
+            pageInfo.textContent = `Page ${currentPage} of ${Math.ceil(allArticles.length / articlesPerPage)}`;
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage * articlesPerPage >= allArticles.length;
+        }
+
+        // Event listeners for pagination buttons
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                displayArticles();
+                updatePaginationControls();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentPage * articlesPerPage < allArticles.length) {
+                currentPage++;
+                displayArticles();
+                updatePaginationControls();
+            }
+        });
+
+        // Initial fetch of articles
+        fetchArticles();
+
+
+ 
+
+
+
+    </script>
+    
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
