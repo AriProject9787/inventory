@@ -315,6 +315,11 @@
       populateItems("All");
       calculateTodaySales();
     };
+    const cond = sessionStorage.getItem("isAdmin");
+  if (cond !== "true") {
+      alert("You are not logged in as admin");
+      window.location.href = "../admin.html";
+  }
   </script>
 </body>
 </html>

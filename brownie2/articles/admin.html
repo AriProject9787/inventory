@@ -179,35 +179,45 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <script>
+    sessionStorage.removeItem("adminUser");
+    sessionStorage.removeItem("adminHash");
     // Hashing Function (SHA-256)
     function hash(value) {
+      console.log(value);
       console.log(CryptoJS.SHA256(value).toString());
       return CryptoJS.SHA256(value).toString();
       console.log("Hashing function loaded successfully.");
     }
     // Store admin credentials securely
-      const user = document.getElementById("username").value || "admin";
-      console.log(user);
-      const passHash = "967887737e780a426a0406aa2ad63e37d9f32d83a24f481e83421d7c5c67c450";
-      sessionStorage.setItem("adminUser", user);
-      sessionStorage.setItem("adminHash", passHash);
+    const adminCredentials = {
+      mainbranch: "49b6cca36b17d805824c99b5a4a8ad5246d646de5e768a7a6d2b7ecc560cd9f2",
+      branch1: "5aeb307116109e81b104fb3a86d69c4763a93692c3dba23ac1a01f5d59dbb836",
+      branch2: "f9aa43263e7a683e514c2ae102a01232e001c24a9bca99acc8037af44b46bdda",
+      branch3: "74872b9c9027627bd9eb04c32cd981b93380dc4534b6be5a5230bacd90e550a3",
+      branch4: "56972a3ab57c91b0f0a42c7c4c91e39798936adadde760e9a128cdfd939a20d7",
+      developer: "2cd9d3af5b18fa0662109fd0aaa02af9a6340c8da8c859b18d73bfc63ff35ed1",
+      admin: "d0b9d87a96b767803f5e04ef54c5b6bd003f5284ba932edb4e99ba7b4894b50c"
+    };
+      
     
     function login() {
-      const inputUser = document.getElementById("username").value;
-      const inputPass = document.getElementById("password").value;
-
-      const storedUser = sessionStorage.getItem("adminUser");
-      const storedHash = sessionStorage.getItem("adminHash");
-      const inputHash = hash(inputPass);
-
-      if (inputUser === storedUser && inputHash === storedHash) {
-        alert("Login successful!");
-        
-        sessionStorage.setItem("isAdmin", "true");
-        // Redirect
-        window.location.href = "billing/admin_dashboard.html";
-      } else {
-        document.getElementById("error").textContent = "Invalid credentials.";
+      const user = document.getElementById("username").value || "admin";
+      const passHash = adminCredentials[user] || "";
+      sessionStorage.setItem("adminUser", user);
+      sessionStorage.setItem("adminHash", passHash);
+      console.log(sessionStorage.getItem("adminUser"));
+      const inputPassword = document.getElementById("password").value;
+      const hashedInput = hash(inputPassword);
+      console.log("Input Password Hash:", hashedInput);
+      if (hashedInput === passHash) {
+        document.getElementById("error").textContent = "";
+        if (user === "developer" || user === "admin" || user === "mainbranch") {
+          window.location.href = "billing/admin_dashboard.html";
+        } else {
+          window.location.href = "billing/stack/billing.html";  
+    }}
+      else {
+        document.getElementById("error").textContent = "Invalid username or password.";
       }
     }
   </script>

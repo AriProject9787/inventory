@@ -32,5 +32,13 @@
   </div>
 
   <script src="script.js"></script>
+  <script>
+    const cond = sessionStorage.getItem("adminUser");
+  if (cond != "developer" && cond != "admin" && cond != "mainbranch") {
+      alert("You are not able to use only developer or admin or main branch user");
+      window.location.href = "billing.html";
+  }
+
+  </script>
 </body>
 </html>
