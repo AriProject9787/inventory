@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Inventory & Waste Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fefefe;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      text-align: center;
+      color: #4a148c;
+    }
+    .form-section {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    input[type="text"], input[type="number"], input[type="date"] {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      padding: 8px 14px;
+      background: #4a148c;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #6a1b9a;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ccc;
+    }
+    .expired {
+      background-color: #ffebee;
+      color: #d50000;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    ul li {
+      background: #ffccbc;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Cake Shop Inventory & Waste Management</h1>
+
+    <div class="form-section">
+      <input type="text" id="itemName" placeholder="Product Name">
+      <input type="number" id="itemQty" placeholder="Quantity">
+      <input type="date" id="itemExpiry">
+      <button onclick="addItem()">Add Product</button>
+    </div>
+
+    <h2>Current Inventory</h2>
+    <table id="inventoryTable">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Expiry Date</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <h2>Wasted/Expired Items</h2>
+    <ul id="wasteList"></ul>
+  </div>
+
+  <script>
+    const tableBody = document.querySelector("#inventoryTable tbody");
+    const wasteList = document.getElementById("wasteList");
+
+    function addItem() {
+      const name = document.getElementById("itemName").value.trim();
+      const qty = parseInt(document.getElementById("itemQty").value);
+      const expiry = document.getElementById("itemExpiry").value;
+
+      if (!name || !qty || !expiry) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const expiryDate = new Date(expiry);
+      const today = new Date();
+      const isExpired = expiryDate < new Date(today.toDateString());
+
+      const row = document.createElement("tr");
+      if (isExpired) row.classList.add("expired");
+
+      row.innerHTML = `
+        <td>${name}</td>
+        <td>${qty}</td>
+        <td>${expiryDate.toISOString().split('T')[0]}</td>
+        <td>${isExpired ? "Expired" : "Active"}</td>
+        <td><button onclick="removeItem(this)">Remove</button></td>
+      `;
+
+      tableBody.appendChild(row);
+
+      if (isExpired) {
+        const wasteEntry = document.createElement("li");
+        wasteEntry.textContent = `${name} - ${qty} units expired on ${expiryDate.toDateString()}`;
+        wasteList.appendChild(wasteEntry);
+      }
+
+      document.getElementById("itemName").value = '';
+      document.getElementById("itemQty").value = '';
+      document.getElementById("itemExpiry").value = '';
+    }
+
+    function removeItem(button) {
+      const row = button.closest("tr");
+      row.remove();
+    }
+  </script>
+</body>
+</html>
