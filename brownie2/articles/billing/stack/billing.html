@@ -1,140 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cake Shop Billing Software</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Futuristic Cake Shop Billing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
+    * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: 'Arial Black', Arial, sans-serif;
-      background: #fdf6f0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      color: #fff;
       display: flex;
-      font-size: 18px;
-      font-weight: bold;
+      height: 100vh;
+      overflow: hidden;
     }
     .sidebar {
-      width: 220px;
-      background: #8B0000;
-      color: white;
+      width: 240px;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid #444;
+      padding: 20px;
       height: 100vh;
-      padding-top: 20px;
+      overflow-y: auto;
     }
-    .sidebar h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
+    .sidebar h2 { text-align: center; margin-bottom: 20px; }
+    .sidebar ul { list-style: none; padding: 0; }
     .sidebar li {
-      padding: 12px 20px;
+      padding: 12px;
+      background: #0f3460;
+      border-radius: 8px;
+      margin: 10px 0;
       cursor: pointer;
+      transition: 0.3s;
     }
     .sidebar li:hover {
-      background: #a30000;
+      background: #533483;
     }
     .container {
       flex: 1;
-      padding: 25px;
+      padding: 20px;
+      overflow-y: auto;
     }
     h1 {
       text-align: center;
-      color: #8B0000;
-      font-size: 28px;
+      color: #e94560;
+    }
+    #datetime {
+      text-align: center;
+      font-size: 14px;
+      color: #bbb;
       margin-bottom: 20px;
     }
-    select, input[type="number"] {
+    label {
+      display: block;
+      margin-top: 20px;
+      font-size: 16px;
+    }
+    select, input {
       width: 100%;
       padding: 10px;
-      margin: 12px 0;
-      font-size: 18px;
-      font-weight: bold;
-      font-family: 'Arial Black', Arial, sans-serif;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
     }
     table {
       width: 100%;
-      border-collapse: collapse;
       margin-top: 20px;
-      font-size: 18px;
-    }
-    table, th, td {
-      border: 2px solid #aaa;
+      border-collapse: collapse;
+      background: rgba(255, 255, 255, 0.05);
     }
     th, td {
-      padding: 12px;
+      padding: 10px;
       text-align: center;
-      font-weight: bold;
+      border-bottom: 1px solid #444;
     }
-    #totalAmount {
-      font-size: 22px;
-      margin-top: 25px;
-      font-weight: bold;
-      text-align: right;
+    th {
+      background-color: #0f3460;
+      color: #fff;
     }
     button {
-      background-color: #8B0000;
-      color: white;
-      padding: 12px 24px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
       margin-top: 15px;
-      font-size: 18px;
-      font-weight: bold;
+      margin-right: 10px;
+      background: #e94560;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
     }
-    button:hover {
-      background-color: #a30000;
+    #totalAmount {
+      margin-top: 20px;
+      text-align: right;
+      font-size: 18px;
+    }
+    #salesToday {
+      margin-top: 5px;
+      text-align: right;
+      font-size: 16px;
+      color: #ccc;
+    }
+
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #444;
+      }
     }
 
     @media print {
       body {
-        width: 72mm;
-        height: 210mm;
-        margin: 0;
-        font-family: 'Courier New', monospace;
         background: white;
         color: black;
+        font-family: 'Courier New', monospace;
         font-size: 12pt;
-        font-weight: bold;
       }
-      .sidebar, select, input, button {
+
+      .sidebar,
+      select,
+      input,
+      button,
+      #suggestedItem,
+      #datetime,
+      .container > div:first-child {
         display: none !important;
       }
+
       .container {
-        padding: 5mm;
+        padding: 20px;
         width: 100%;
       }
+
       h1 {
-        font-size: 16pt;
+        color: black;
+        font-size: 18pt;
         text-align: center;
-        margin-bottom: 5mm;
         border-bottom: 1px dashed black;
-        padding-bottom: 2mm;
+        margin-bottom: 10px;
+        padding-bottom: 5px;
       }
+
       table {
         width: 100%;
-        font-size: 10pt;
+        font-size: 11pt;
         border-collapse: collapse;
+        margin-top: 20px;
       }
+
       th, td {
-        border-bottom: 1px dashed #333;
-        padding: 2mm 0;
+        border-bottom: 1px dashed black;
+        padding: 5px 0;
         text-align: left;
       }
-      th {
-        font-weight: bold;
-        border-top: 1px solid black;
-        border-bottom: 1px solid black;
-      }
+
       #totalAmount {
-        font-size: 12pt;
         font-weight: bold;
+        font-size: 14pt;
         text-align: right;
-        margin-top: 5mm;
-        border-top: 1px dashed black;
-        padding-top: 2mm;
+        margin-top: 15px;
+        border-top: 1px solid black;
+        padding-top: 10px;
+      }
+
+      #salesToday {
+        display: none;
       }
     }
   </style>
@@ -143,69 +176,69 @@
   <div class="sidebar">
     <h2>Categories</h2>
     <ul>
-      <li onclick="filterCategory('Fresh Cream Cakes')">Fresh Cream Cakes</li>
-      <li onclick="filterCategory('Pizza')">Pizza</li>
-      <li onclick="filterCategory('Sandwiches')">Sandwiches</li>
-      <li onclick="filterCategory('Desserts')">Desserts</li>
-      <li onclick="filterCategory('Milkshakes')">Milkshakes</li>
-      <li onclick="filterCategory('Pastry Cakes')">Pastry Cakes</li>
-      <li onclick="filterCategory('All')">Show All</li>
+      <li onclick="filterCategory('Milk Shakes')">🥤 Milk Shakes</li>
+      <li onclick="filterCategory('Pizza')">🍕 Pizza</li>
+      <li onclick="filterCategory('Sandwiches')">🥪 Sandwiches</li>
+      <li onclick="filterCategory('Puff')">🥟 Puff</li>
+      <li onclick="filterCategory('Burger')">🍔 Burger</li>
+      <li onclick="filterCategory('All')">🔍 Show All</li>
     </ul>
   </div>
 
   <div class="container">
     <h1>Cake Shop Billing</h1>
-
+    <div id="datetime"></div>
+    
     <label for="item">Select Item:</label>
-    <select id="item">
-      <option value="">--Choose--</option>
-    </select>
+    <select id="item"><option value="">--Choose--</option></select>
 
     <label for="quantity">Quantity:</label>
-    <input type="number" id="quantity" min="1" value="1">
+    <input type="number" id="quantity" min="1" value="1"/>
 
-    <button onclick="addItem()">Add to Bill</button>
-    <button onclick="printBill()">Print Bill</button>
+    <div>
+      <button onclick="addItem()">➕ Add to Bill</button>
+      <button onclick="printBill()">🖨️ Print</button>
+      <button onclick="clearBill()">🧹 Clear</button>
+    </div>
 
     <table>
       <thead>
         <tr>
           <th>Item</th>
           <th>Unit Price</th>
-          <th>Quantity</th>
+          <th>Qty</th>
           <th>Total</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody id="billTable"></tbody>
     </table>
 
     <div id="totalAmount">Total: ₹0</div>
+    <div id="salesToday">Total Sales Today: ₹0</div>
   </div>
 
   <script>
     const allItems = {
-      "Fresh Cream Cakes": {
-        "Vanilla Delight 0.5kg": 280,
-        "Black Forest 1kg": 600,
-        "Choco Truffle 0.5kg": 450
+      "Milk Shakes": {
+        "Strawberry Milkshake": 90, "Vanilla Milkshake": 70,
+        "Butter Scotch Milkshake": 90, "Chocolate Milkshake": 100,
+        "Black Current Milkshake": 90
       },
       "Pizza": {
-        "Paneer Pizza": 220,
-        "Chilli Chicken Pizza": 260,
-        "Cheese Pizza": 160
+        "Veg Pizza": 150, "Chicken Pizza": 180,
+        "Chicken Tikka Pizza": 190, "Chilli Chicken Pizza": 210,
+        "Cheese Pizza": 130
       },
       "Sandwiches": {
-        "American Fresh Chicken Sandwich": 140,
-        "Chicken Cheese Sandwich": 100
+        "Veg Sandwich": 60, "Chicken Sandwich": 80, "Corn Sandwich": 70
       },
-      "Desserts": {
-        "Chocolate Brownie with Ice Cream": 90
+      "Puff": {
+        "Veg Puff": 25, "Chicken Puff": 30,
+        "Paneer Puff": 35, "Egg Puff": 30, "Mashroom Puff": 30
       },
-      "Milkshakes": {
-        "Strawberry Milkshake": 100
-      },
-      "Pastry Cakes": {
-        "Chocolate Truffle Pastry": 70
+      "Burger": {
+        "Veg Burger": 80, "Chicken Burger": 90, "Paneer Burger": 100
       }
     };
 
@@ -215,7 +248,7 @@
     function populateItems(category) {
       itemSelect.innerHTML = '<option value="">--Choose--</option>';
       const categories = category === 'All' ? allItems : { [category]: allItems[category] };
-      for (const [cat, items] of Object.entries(categories)) {
+      for (const items of Object.values(categories)) {
         for (const [name, price] of Object.entries(items)) {
           const option = document.createElement("option");
           option.value = name;
@@ -225,49 +258,86 @@
       }
     }
 
-    function filterCategory(category) {
-      populateItems(category);
+    function filterCategory(cat) {
+      populateItems(cat);
     }
 
     function addItem() {
-      const itemName = itemSelect.value;
-      const quantity = parseInt(document.getElementById("quantity").value);
+      const name = itemSelect.value;
+      const qty = parseInt(document.getElementById("quantity").value);
+      if (!name || qty <= 0) return alert("Select item & valid quantity.");
 
-      if (!itemName || quantity <= 0) {
-        alert("Please select a valid item and quantity.");
-        return;
-      }
-
-      let itemPrice = 0;
+      let price = 0;
       for (const catItems of Object.values(allItems)) {
-        if (itemName in catItems) {
-          itemPrice = catItems[itemName];
-          break;
+        if (name in catItems) {
+          price = catItems[name]; break;
         }
       }
 
-      const total = itemPrice * quantity;
+      const total = price * qty;
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${itemName}</td>
-        <td>₹${itemPrice}</td>
-        <td>${quantity}</td>
+        <td>${name}</td>
+        <td>₹${price}</td>
+        <td>${qty}</td>
         <td>₹${total}</td>
+        <td><button onclick="removeRow(this, ${total})">❌</button></td>
       `;
       document.getElementById("billTable").appendChild(row);
-      updateTotal(total);
-    }
-
-    function updateTotal(amount) {
-      grandTotal += amount;
+      grandTotal += total;
       document.getElementById("totalAmount").textContent = `Total: ₹${grandTotal}`;
     }
 
-    function printBill() {
-      window.print();
+    function removeRow(btn, total) {
+      btn.closest("tr").remove();
+      grandTotal -= total;
+      document.getElementById("totalAmount").textContent = `Total: ₹${grandTotal}`;
     }
 
-    window.onload = () => populateItems("All");
+    function clearBill() {
+      document.getElementById("billTable").innerHTML = "";
+      grandTotal = 0;
+      document.getElementById("totalAmount").textContent = "Total: ₹0";
+    }
+
+    function printBill() {
+      if (grandTotal === 0) return alert("No items to print.");
+
+      const today = new Date().toISOString().slice(0, 10);
+      const salesData = JSON.parse(localStorage.getItem("totalSales") || "{}");
+
+      if (!salesData[today]) salesData[today] = 0;
+      salesData[today] += grandTotal;
+
+      localStorage.setItem("totalSales", JSON.stringify(salesData));
+
+      window.print();
+      clearBill();
+      updateTodaySales();
+    }
+
+    function updateTodaySales() {
+      const today = new Date().toISOString().slice(0, 10);
+      const salesData = JSON.parse(localStorage.getItem("totalSales") || "{}");
+      const total = salesData[today] || 0;
+      document.getElementById("salesToday").textContent = `Total Sales Today: ₹${total}`;
+    }
+
+    
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("datetime").textContent =
+        now.toLocaleDateString() + " " + now.toLocaleTimeString();
+    }
+
+    setInterval(updateClock, 1000);
+
+    window.onload = () => {
+      populateItems("All");
+      updateClock();
+      updateTodaySales();
+    };
   </script>
 </body>
 </html>
