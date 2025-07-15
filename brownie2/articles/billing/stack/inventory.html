@@ -3,42 +3,237 @@
 <head>
   <meta charset="UTF-8">
   <title>Cake Shop Resource Inventory</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <!-- SheetJS for Excel Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      background: linear-gradient(to right, #f8f9fa, #e3f2fd);
+    }
+    .container {
+      max-width: 850px;
+      margin: auto;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2 {
+      text-align: center;
+      color: #343a40;
+    }
+    .form-section {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      min-width: 200px;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    .use-btn {
+      background-color: #007bff;
+      color: white;
+    }
+    .delete-btn {
+      background-color: #dc3545;
+      color: white;
+    }
+    .add-btn {
+      background-color: #28a745;
+      color: white;
+    }
+    .export-btn {
+      background-color: #6c757d;
+      color: white;
+      margin-left: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #dee2e6;
+      padding: 10px;
+      text-align: center;
+    }
+    @media screen and (max-width: 600px) {
+      .form-section {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Cake Shop Resource Inventory</h1>
+<div class="container">
+  <h1>🍰 Cake Shop Resource Inventory</h1>
 
-    <div class="form-section">
-      <input type="text" id="resourceName" placeholder="Resource (e.g. Eggs, Flour)" />
-      <input type="number" id="resourceQty" placeholder="Quantity" />
-      <input type="text" id="resourceUnit" placeholder="Unit (e.g. kg, L, pcs)" />
-      <button onclick="addOrUpdateResource()">Add / Update</button>
-    </div>
-
-    <h2>Inventory</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Resource</th>
-          <th>Quantity</th>
-          <th>Unit</th>
-          <th>Use</th>
-          <th>Delete</th>
-        </tr>
-      </thead>
-      <tbody id="inventoryTable"></tbody>
-    </table>
+  <div class="form-section">
+    <input type="text" id="resourceName" placeholder="Resource (e.g. Eggs, Flour)" />
+    <input type="number" id="resourceQty" placeholder="Quantity" />
+    <input type="text" id="resourceUnit" placeholder="Unit (e.g. kg, L, pcs)" />
+    <button class="add-btn" onclick="addOrUpdateResource()">Add / Update</button>
+    <button class="export-btn" onclick="exportToExcel()">Export to Excel</button>
   </div>
 
-  <script src="script.js"></script>
-  <script>
-    const cond = sessionStorage.getItem("adminUser");
-  if (cond != "developer" && cond != "admin" && cond != "mainbranch") {
-      alert("You are not able to use only developer or admin or main branch user");
-      window.location.href = "billing.html";
+  <h2>📦 Inventory</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Resource</th>
+        <th>Quantity</th>
+        <th>Unit</th>
+        <th>Use</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody id="inventoryTable"></tbody>
+  </table>
+</div>
+
+<script>
+  // Firebase Configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyAGYH0CeVCQDESjcJdvikoKmeOyhLCYoyk",
+    authDomain: "grand-lekage-web.firebaseapp.com",
+    projectId: "grand-lekage-web",
+    storageBucket: "grand-lekage-web.appspot.com",
+    messagingSenderId: "185245033432",
+    appId: "1:185245033432:web:258e597d6b2b7ad46f48ad",
+    measurementId: "G-B4GCWFR374"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const inventoryRef = db.ref("inventory");
+
+  let inventory = [];
+
+  // Realtime Data Load
+  inventoryRef.on("value", snapshot => {
+    inventory = [];
+    const data = snapshot.val();
+    for (let key in data) {
+      inventory.push({ id: key, ...data[key] });
+    }
+    renderInventory();
+  });
+
+  function addOrUpdateResource() {
+    const name = document.getElementById("resourceName").value.trim();
+    const qty = parseFloat(document.getElementById("resourceQty").value);
+    const unit = document.getElementById("resourceUnit").value.trim();
+
+    if (!name || isNaN(qty) || qty <= 0 || !unit) {
+      alert("Please enter valid resource details.");
+      return;
+    }
+
+    const existing = inventory.find(item => item.name.toLowerCase() === name.toLowerCase());
+    if (existing) {
+      const updatedQty = existing.qty + qty;
+      db.ref("inventory/" + existing.id).update({ qty: updatedQty });
+    } else {
+      const newRef = inventoryRef.push();
+      newRef.set({ name, qty, unit });
+    }
+
+    clearInputs();
   }
 
-  </script>
+  function useResource(index) {
+    const used = prompt("Enter quantity to use:");
+    if (used === null) return;
+    const usedQty = parseFloat(used);
+    if (isNaN(usedQty) || usedQty <= 0) {
+      alert("Enter a valid quantity.");
+      return;
+    }
+
+    const item = inventory[index];
+    if (usedQty > item.qty) {
+      alert("Not enough stock.");
+      return;
+    }
+
+    const remainingQty = item.qty - usedQty;
+    if (remainingQty === 0) {
+      db.ref("inventory/" + item.id).remove();
+    } else {
+      db.ref("inventory/" + item.id).update({ qty: remainingQty });
+    }
+  }
+
+  function deleteResource(index) {
+    if (confirm("Are you sure you want to delete this resource?")) {
+      const item = inventory[index];
+      db.ref("inventory/" + item.id).remove();
+    }
+  }
+
+  function renderInventory() {
+    const table = document.getElementById("inventoryTable");
+    table.innerHTML = "";
+    inventory.forEach((item, index) => {
+      const row = `
+        <tr>
+          <td>${item.name}</td>
+          <td>${item.qty.toFixed(2)}</td>
+          <td>${item.unit}</td>
+          <td><button class="use-btn" onclick="useResource(${index})">Use</button></td>
+          <td><button class="delete-btn" onclick="deleteResource(${index})">Delete</button></td>
+        </tr>`;
+      table.innerHTML += row;
+    });
+  }
+
+  function clearInputs() {
+    document.getElementById("resourceName").value = "";
+    document.getElementById("resourceQty").value = "";
+    document.getElementById("resourceUnit").value = "";
+  }
+
+  function exportToExcel() {
+    const ws_data = [["Resource", "Quantity", "Unit"]];
+    inventory.forEach(item => {
+      ws_data.push([item.name, item.qty.toFixed(2), item.unit]);
+    });
+
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Inventory");
+
+    XLSX.writeFile(wb, "CakeShop_Inventory.xlsx");
+  }
+
+  // Admin Access Control
+  const cond = sessionStorage.getItem("adminUser");
+  if (cond !== "developer" && cond !== "admin" && cond !== "mainbranch") {
+    alert("Only developer, admin, or main branch users can access this page.");
+    window.location.href = "billing.html";
+  }
+</script>
 </body>
 </html>
