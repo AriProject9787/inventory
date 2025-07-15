@@ -94,6 +94,45 @@
     .actions {
       margin-top: 20px;
     }
+
+    /* Print Styles for RP3150 (72mm width) */
+    @media print {
+      @page {
+        size: 72mm auto;
+        margin: 5mm;
+      }
+      body {
+        font-size: 10px;
+        font-family: 'Courier New', monospace;
+        margin: 0;
+      }
+      .sidebar, .container {
+        display: none;
+      }
+      #printArea {
+        display: block;
+        width: 100%;
+      }
+      .print-header {
+        text-align: center;
+        margin-bottom: 10px;
+      }
+      .print-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .print-table th, .print-table td {
+        text-align: left;
+        padding: 4px 0;
+        font-size: 10px;
+      }
+      .print-footer {
+        text-align: center;
+        margin-top: 10px;
+        border-top: 1px dashed #000;
+        padding-top: 5px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -153,6 +192,21 @@
     <div id="dailyReport" style="margin-top: 40px; border-top: 2px solid #8B0000; padding-top: 20px;">
       <h3>Today's Sales Report</h3>
       <div id="todaySalesTotal">Total Sales Today: ₹0</div>
+    </div>
+  </div>
+
+  <!-- Printable 72mm Invoice Format -->
+  <div id="printArea" style="display:none;">
+    <div class="print-header">
+      <strong>BROWNIE FACTORY</strong><br/>
+      GSTIN: 33AMCPR6223Q2ZN<br/>
+      Ph: 044-26862877<br/>
+      212, Redhills Main Rd, Ambattur, Chennai-600053
+    </div>
+    <table class="print-table" id="printTable"></table>
+    <div class="print-footer">
+      Total: ₹<span id="printTotal">0</span><br/>
+      Thank you. Visit Again!
     </div>
   </div>
 
@@ -257,7 +311,6 @@
       updateTotal(total);
       saveSale(customName, customPrice, quantity, total);
       calculateTodaySales();
-
       document.getElementById("customItemName").value = "";
       document.getElementById("customItemPrice").value = "";
     }
@@ -283,7 +336,33 @@
     }
 
     function printBill() {
-      const printContent = document.querySelector(".container").innerHTML;
+      const table = document.getElementById("billTable");
+      const printTable = document.getElementById("printTable");
+      printTable.innerHTML = "";
+
+      const headerRow = document.createElement("tr");
+      headerRow.innerHTML = `
+        <th>Item</th><th>Qty</th><th>Rate</th><th>Amt</th>
+      `;
+      printTable.appendChild(headerRow);
+
+      for (const row of table.rows) {
+        const cells = row.querySelectorAll("td");
+        if (cells.length === 5) {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${cells[0].innerText}</td>
+            <td>${cells[2].innerText}</td>
+            <td>${cells[1].innerText.replace('₹','')}</td>
+            <td>${cells[3].innerText.replace('₹','')}</td>
+          `;
+          printTable.appendChild(tr);
+        }
+      }
+
+      document.getElementById("printTotal").innerText = grandTotal;
+
+      const printContent = document.getElementById("printArea").outerHTML;
       const originalContent = document.body.innerHTML;
       document.body.innerHTML = printContent;
       window.print();
@@ -315,11 +394,6 @@
       populateItems("All");
       calculateTodaySales();
     };
-    const cond = sessionStorage.getItem("isAdmin");
-  if (cond !== "true") {
-      alert("You are not logged in as admin");
-      window.location.href = "../admin.html";
-  }
   </script>
 </body>
 </html>
