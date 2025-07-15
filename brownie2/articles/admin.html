@@ -107,7 +107,7 @@
       border: none;
       outline: none;
       background: rgba(255,255,255,0.1);
-      color: #fff;
+      color: #181616;
     }
 
     select:focus, input:focus {
@@ -116,7 +116,7 @@
     }
 
     button {
-      background-color: #00ffe7;
+      background-color: #dbebe9;
       color: #111;
       font-weight: bold;
       cursor: pointer;
@@ -165,22 +165,22 @@
         <div></div>
         <div></div>
       </div>
-      <h2>BrownieFactory</h2>
+      <h2 class="neon-text">BrownieFactory</h2>
     </div>
     <nav>
       <ul id="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="cart.html">Cart</a></li>
-        <li><a href="admin.html">Admin</a></li>
-        <li><a href="profile.html">Profile</a></li>
-        <li><a href="../index.html">Logout</a></li>
-        <button id="theme-toggle">🌙/☀️</button>
+        <li><a href="index.html" class="neon-text">Home</a></li>
+        <li><a href="cart.html" class="neon-text">Cart</a></li>
+        <li><a href="admin.html" class="neon-text">Admin</a></li>
+        <li><a href="profile.html" class="neon-text">Profile</a></li>
+        <li><a href="../index.html" class="neon-text">Logout</a></li>
+        <button id="theme-toggle" class="neon-text">🌙/☀️</button>
       </ul>
     </nav>
   </header>
 
-  <div class="login-box">
-    <h2>Admin Login</h2> 
+  <div class="login-box" >
+    <h2 class="neon-text">Admin Login</h2> 
     <select id="username">
       <option value="">--Select UserName--</option>
       <option value="mainbranch">Main Branch</option>
@@ -192,7 +192,7 @@
       <option value="admin">Admin</option>
     </select>
     <input type="password" id="password" placeholder="Password" />
-    <button onclick="login()">Login</button>
+    <button onclick="login()" class="neon-box">Login</button>
     <p id="error" class="error"></p>
   </div>
 

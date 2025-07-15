@@ -17,23 +17,23 @@
                 <div></div>
                 <div></div>
             </div>
-            <h2>BrownieFactory</h2>
+            <h2 class="neon-text">BrownieFactory</h2>
             
         </div>
         <nav>
             <ul id="nav-links">
-                <li><a href="#">Home</a></li>
-                <li><a href="cart.html">Cart</a></li>
-                <li><a href="admin.html">Admin</a></li>
-                <li><a href="profile.html">Profile</a></li>
-                <li><a href="../index.html">Logout</a></li>
-                <button id="theme-toggle">🌙/☀️</button>
+                <li><a href="#" class="neon-text">Home</a></li>
+                <li><a href="cart.html" class="neon-text">Cart</a></li>
+                <li><a href="admin.html" class="neon-text">Admin</a></li>
+                <li><a href="profile.html" class="neon-text">Profile</a></li>
+                <li><a href="../index.html" class="neon-text">Logout</a></li>
+                <button id="theme-toggle" class="neon-text">🌙/☀️</button>
             </ul>
         </nav>
     </header>
 
     <section class="hero">
-        <h2>Welcome to Brownie!</h2>
+        <h2 class="neon-text">Welcome to Brownie!</h2>
     </section>
 
     <main class="products" id="product"></main>
@@ -80,9 +80,9 @@
 
             allArticles.forEach(article => {
                 const articleHTML = `
-                <a href="prod.html?title=${article.product}"><div class="product-card">
+                <a href="prod.html?title=${article.product}" class="neon-box"><div class="product-card" class="neon-box">
                     <div class="product-image">
-                        <img src="${article.ImgUrl}" alt="${article.product}">
+                        <img src="${article.ImgUrl}" alt="${article.product}" >
                     </div>
                     <div class="product-details">
                         <h3>${article.product}</h3>

@@ -1,3 +1,45 @@
+
+/* Neon Text Effect */
+.neon-text {
+  color: #eaecec;
+  text-shadow:
+    0 0 5px rgba(105, 28, 230, 0.973),
+    0 0 10px rgb(11, 181, 248),
+    0 0 20px rgb(76, 73, 230),
+    0 0 40px rgb(52, 63, 221);
+  font-family: 'Arial', sans-serif;
+}
+
+/* Neon Box Border */
+.neon-box {
+  border: 2px solid #0ff;
+  padding: 20px;
+  margin: 20px;
+ 
+  box-shadow:
+    0 0 10px #0ff,
+    0 0 20px #0ff,
+    0 0 40px #0ff;
+  color: rgb(243, 16, 16);
+}
+
+/* Neon Glow on Images */
+.neon-img {
+  width: 300px;
+  border-radius: 10px;
+  box-shadow:
+    0 0 10px #0ff,
+    0 0 20px #0ff,
+    0 0 30px #0ff,
+    0 0 40px #0ff;
+  transition: transform 0.3s ease;
+}
+
+.neon-img:hover {
+  transform: scale(1.05);
+}
+
+
 /* Normal style settings start*/
 *{
     margin: 0;
@@ -68,7 +110,7 @@ body{
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background:url("images/cake8.webp") no-repeat;
+    background:url("images/index1_bg.webp") no-repeat;
     background-size: cover;
     background-position: center;
 }
@@ -90,7 +132,7 @@ body{
     left: 5px;
     transform: translateY(-50%);
     font-size: 1em;
-    color: #fbfdff;
+    color: #00060c;
     font-weight: 500;
     pointer-events: none;
     transition: .5%;
@@ -106,7 +148,7 @@ body{
     border: none;
     outline: none;
     font-size: 1em;
-    color: #f1f4f7;
+    color: #030114;
     font-weight: 600;
 }
 .inputbox .icon{
@@ -283,7 +325,7 @@ body{
     height: 480px;
 }
 .title{
-    color: rgb(16, 245, 54);
+    color: rgb(114, 95, 224);
 }
 .wrapper .loginBox{
     width: 100%;
