@@ -183,11 +183,10 @@
     <h2 class="neon-text">Admin Login</h2> 
     <select id="username">
       <option value="">--Select UserName--</option>
-      <option value="mainbranch">Main Branch</option>
-      <option value="branch1">Branch1</option>
-      <option value="branch2">Branch2</option>
-      <option value="branch3">Branch3</option>
-      <option value="branch4">Branch4</option>
+      <option value="mainbranch">Main Branch (Ambattur)</option>
+      <option value="branch1">Surapet Branch</option>
+      <option value="branch2">Korattur Branch</option>
+      <option value="branch3">Ponmar Branch</option>
       <option value="developer">Developer</option>
       <option value="admin">Admin</option>
     </select>
@@ -215,7 +214,7 @@
       branch3: "74872b9c9027627bd9eb04c32cd981b93380dc4534b6be5a5230bacd90e550a3",
       branch4: "56972a3ab57c91b0f0a42c7c4c91e39798936adadde760e9a128cdfd939a20d7",
       developer: "2cd9d3af5b18fa0662109fd0aaa02af9a6340c8da8c859b18d73bfc63ff35ed1",
-      admin: "d0b9d87a96b767803f5e04ef54c5b6bd003f5284ba932edb4e99ba7b4894b50c"
+      admin: "d0b9d87a96b767803f5e04ef54c5b6bd003f5284ba932edb4e99ba7b4894b50c" 
     };
       
     
@@ -225,6 +224,28 @@
       sessionStorage.setItem("adminUser", user);
       sessionStorage.setItem("adminHash", passHash);
       console.log(sessionStorage.getItem("adminUser"));
+      if (sessionStorage.getItem("adminUser")=="mainbranch"){
+      localStorage.setItem("branchDetails","No.212,Readhills Main Road,East Banu Nagar,Ambattur,Chennai,044-26862877,7200984005");
+      console.log("Branch Details Set:", localStorage.getItem("branchDetails"));
+    }
+    else if (sessionStorage.getItem("adminUser")=="branch1"){
+      localStorage.setItem("branchDetails","No.592,Redhills Main Road,Sivapragasam Nagar,Surapet,Chennai,7200984006");
+    }
+    else if (sessionStorage.getItem("adminUser")=="branch2"){
+      localStorage.setItem("branchDetails","H-17,New No.34,Central Avenue,Korattur,Chennai,9094700037");
+    }
+    else if (sessionStorage.getItem("adminUser")=="branch3"){
+      localStorage.setItem("branchDetails","No.41/3,Selliamman Nagar,Ponmar,Chennai,8778711500");
+    }
+    else if (sessionStorage.getItem("adminUser")=="developer"){
+      localStorage.setItem("branchDetails","Developer Branch");
+    }
+    else if (sessionStorage.getItem("adminUser")=="admin"){
+      localStorage.setItem("branchDetails","Admin Branch");
+    }
+    else{
+      console.log("No branch details set for this user.");
+    }
       const inputPassword = document.getElementById("password").value;
       const hashedInput = hash(inputPassword);
       console.log("Input Password Hash:", hashedInput);
@@ -243,6 +264,10 @@
         document.getElementById("error").textContent = "Invalid username or password.";
       }
     }
+    
+
+
+
   </script>
   <script>
     const menuToggle = document.getElementById('menu-toggle');
