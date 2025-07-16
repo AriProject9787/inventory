@@ -171,7 +171,6 @@
       }
     }
   </style>
-  
   <!-- Add this inside the <style> block for print-friendly thermal format -->
     <style>
 /* Hide everything except #receiptOutput when printing */
@@ -234,17 +233,17 @@
     position: absolute;
     left: 0;
     top: 0;
-    width: 72mm;
+    width: 73mm;
     padding: 5mm;
     font-family: 'Courier New', monospace;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.4;
   }
 }
 
 
   </style>
-  <script>
+  <!-- <script>
     // Function to handle printing
     function printReceipt() {
       const receiptDiv = document.getElementById("receiptOutput");
@@ -254,18 +253,43 @@
         receiptDiv.style.display = "none";
       }
     }
-  </script>
-
+  </script> -->
 </head>
 <body>
   <div class="sidebar">
     <h2>Categories</h2>
     <ul>
-      <li onclick="filterCategory('Milk Shakes')">🥤 Milk Shakes</li>
-      <li onclick="filterCategory('Pizza')">🍕 Pizza</li>
-      <li onclick="filterCategory('Sandwiches')">🥪 Sandwiches</li>
-      <li onclick="filterCategory('Puff')">🥟 Puff</li>
-      <li onclick="filterCategory('Burger')">🍔 Burger</li>
+      <li onclick="filterCategory('Fresh Cream Cakes')">Fresh Cream Cakes</li>
+      <li onclick="filterCategory('Dessert')">Dessert</li>
+      <li onclick="filterCategory('Fries&Tries')">Fries&Tries</li>
+      <li onclick="filterCategory('Burger')">Burger</li>
+      <li onclick="filterCategory('Fresh Sandwich')">Fresh Sandwich</li>
+      <li onclick="filterCategory('Sandwich Grilled')">Sandwich Grilled</li>
+      <li onclick="filterCategory('Italian Panini Sandwich(R)')">Italian Panini Sandwich(R)</li>
+      <li onclick="filterCategory('Veg Pizza (R)')">Veg Pizza (R)</li>
+      <li onclick="filterCategory('Non Veg Pizza(R)')">Non Veg Pizza(R)</li>
+      <li onclick="filterCategory('Milk Shake')">Milk Shake</li>
+      <li onclick="filterCategory('Doughnut')">Doughnut</li>
+      <li onclick="filterCategory('Veg Puff')">Veg Puff</li>
+      <li onclick="filterCategory('Pastry Cake')">Pastry Cake</li>
+      <li onclick="filterCategory('Dessert Cake')">Dessert Cake</li>
+      <li onclick="filterCategory('Tart')">Tart</li>
+      <li onclick="filterCategory('Non Veg Puff')">Non Veg Puff</li>
+      <!-- Non-Veg Combo Categories -->
+      <li onclick="filterCategory('SandWich Fresh Combo')">SandWich Fresh Combo</li>
+      <li onclick="filterCategory('Sandwich Grilled Combo')">Sandwich Grilled Combo</li>
+      <li onclick="filterCategory('Burger Combo')">Burger Combo</li>
+      <li onclick="filterCategory('Fries & Ties Combo')">Fries & Ties Combo</li>
+      <li onclick="filterCategory('Italian Panini Combo')">Italian Panini Combo</li>
+      <li onclick="filterCategory('Non Veg Pizza Combo')">Non Veg Pizza Combo</li>
+
+      <!-- Veg Combo Categories -->
+      <li onclick="filterCategory('SandWich Fresh Combo Veg')">SandWich Fresh Combo Veg</li>
+      <li onclick="filterCategory('Sandwich Grilled Combo Veg')">Sandwich Grilled Combo Veg</li>
+      <li onclick="filterCategory('Burger Combo Veg')">Burger Combo Veg</li>
+      <li onclick="filterCategory('Italian Panini Combo Veg')">Italian Panini Combo Veg</li>
+      <li onclick="filterCategory('Veg Pizza Combo')">Veg Pizza Combo</li>
+
       <li onclick="filterCategory('All')">🔍 Show All</li>
     </ul>
   </div>
@@ -302,31 +326,10 @@
     <div id="totalAmount">Total: ₹0</div>
     <div id="salesToday">Total Sales Today: ₹0</div>
   </div>
+  <script src="bill.js"></script>
 
   <script>
-    const allItems = {
-      "Milk Shakes": {
-        "Strawberry Milkshake": 90, "Vanilla Milkshake": 70,
-        "Butter Scotch Milkshake": 90, "Chocolate Milkshake": 100,
-        "Black Current Milkshake": 90
-      },
-      "Pizza": {
-        "Veg Pizza": 150, "Chicken Pizza": 180,
-        "Chicken Tikka Pizza": 190, "Chilli Chicken Pizza": 210,
-        "Cheese Pizza": 130
-      },
-      "Sandwiches": {
-        "Veg Sandwich": 60, "Chicken Sandwich": 80, "Corn Sandwich": 70
-      },
-      "Puff": {
-        "Veg Puff": 25, "Chicken Puff": 30,
-        "Paneer Puff": 35, "Egg Puff": 30, "Mashroom Puff": 30
-      },
-      "Burger": {
-        "Veg Burger": 80, "Chicken Burger": 90, "Paneer Burger": 100
-      }
-    };
-
+   
     let grandTotal = 0;
     const itemSelect = document.getElementById("item");
 
