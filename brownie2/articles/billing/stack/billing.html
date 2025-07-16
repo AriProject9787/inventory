@@ -171,6 +171,57 @@
       }
     }
   </style>
+  
+  <!-- Add this inside the <style> block for print-friendly thermal format -->
+    <style>
+/* Hide everything except #receiptOutput when printing */
+@media print {
+  body {
+    background: white;
+    color: black;
+    font-family: 'Courier New', monospace;
+    font-size: 10pt;
+    margin: 0;
+    padding: 10px;
+    width: 72mm;
+  }
+
+  .sidebar,
+  select,
+  input,
+  button,
+  #datetime,
+  .container,
+  table,
+  #totalAmount,
+  #salesToday {
+    display: none !important;
+  }
+
+  #receiptOutput {
+    display: block !important;
+    white-space: pre;
+  }
+}
+
+/* Hide receipt output on screen */
+#printOutput, #receiptOutput {
+  display: none;
+}
+</style>
+  
+  <script>
+    // Function to handle printing
+    function printReceipt() {
+      const receiptDiv = document.getElementById("receiptOutput");
+      if (receiptDiv) {
+        receiptDiv.style.display = "block";
+        window.print();
+        receiptDiv.style.display = "none";
+      }
+    }
+  </script>
+
 </head>
 <body>
   <div class="sidebar">
@@ -299,22 +350,53 @@
       grandTotal = 0;
       document.getElementById("totalAmount").textContent = "Total: ₹0";
     }
+function printBill() {
+  if (grandTotal === 0) return alert("No items to print.");
 
-    function printBill() {
-      if (grandTotal === 0) return alert("No items to print.");
+  const today = new Date().toISOString().slice(0, 10);
+  const salesData = JSON.parse(localStorage.getItem("totalSales") || "{}");
+  if (!salesData[today]) salesData[today] = 0;
+  salesData[today] += grandTotal;
+  console.log(`Today's sales updated: ₹${salesData[today]}`);
+  localStorage.setItem("totalSales", JSON.stringify(salesData));
 
-      const today = new Date().toISOString().slice(0, 10);
-      const salesData = JSON.parse(localStorage.getItem("totalSales") || "{}");
+  // Format receipt
+  const receipt = [];
+  receipt.push("       Brownie Factory");
+  receipt.push(" --------------------------------");
+  receipt.push(" Item        Rate  Qty  Amount");
+  receipt.push(" -------------------------------");
 
-      if (!salesData[today]) salesData[today] = 0;
-      salesData[today] += grandTotal;
-
-      localStorage.setItem("totalSales", JSON.stringify(salesData));
-
-      window.print();
-      clearBill();
-      updateTodaySales();
+  const rows = document.querySelectorAll("#billTable tr");
+  rows.forEach(row => {
+    const cols = row.querySelectorAll("td");
+    if (cols.length) {
+      const item = cols[0].textContent.padEnd(10, ' ').slice(0, 10);
+      const rate = cols[1].textContent.replace("₹", "").padStart(5, ' ');
+      const qty = cols[2].textContent.padStart(5, ' ');
+      const total = cols[3].textContent.replace("₹", "").padStart(5, ' ');
+      receipt.push(`${item} ₹${rate}  ${qty} ₹${total}`);
     }
+  });
+
+  receipt.push(" -----------------------------");
+  receipt.push(`Total: ₹${grandTotal.toFixed(2)}`.padStart(25));
+  receipt.push(" -----------------------------");
+  receipt.push(new Date().toLocaleString());
+  receipt.push("\n     Thank you! Visit Again 😊");
+
+  const receiptDiv = document.createElement("pre");
+  receiptDiv.id = "receiptOutput";
+  receiptDiv.classList.add("print-only");
+  receiptDiv.textContent = receipt.join("\n");
+  document.body.appendChild(receiptDiv);
+
+  window.print();
+
+  receiptDiv.remove();
+  clearBill();
+  updateTodaySales();
+}
 
     function updateTodaySales() {
       const today = new Date().toISOString().slice(0, 10);
