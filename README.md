@@ -67,12 +67,35 @@ cd inventory
     Connect via AJAX from your website
 
 
-🧪 Screenshots
+## 🧪 Screenshots
 
-  Add your screenshots inside a screenshots/ folder and use the following syntax:
+Add your screenshots inside a `screenshots/` folder and use the following syntax:
 
-![Homepage](screenshots/homepage.png)
-![Admin Panel](screenshots/admin.png)
+- **Index Page:**
+  ![Index Page 1](screenshots/index1_page.png)  
+  ![Index Page 2](screenshots/index2_page.png)
+
+- **Login Page:**  
+  ![Login Page](screenshots/login_page.png)
+
+- **Home Page:**  
+  ![Home Page](screenshots/home_page.png)
+
+- **Product Page:**  
+  ![Product Page](screenshots/product_page.png)
+
+- **Cart Page:**  
+  ![Cart Page](screenshots/cart_page.png)
+
+- **Admin Page:**  
+  ![Admin Page](screenshots/admin_page.png)
+
+- **Billing Page:**  
+  ![Billing Page](screenshots/billing_page.png)
+
+- **Generated Bill:**  
+  ![Bill](screenshots/bill.png)
+
 
 📈 Future Enhancements
 
