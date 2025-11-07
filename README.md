@@ -10,6 +10,8 @@ This project is a fully functional online food ordering and billing system desig
 
 
 ---
+[Live Demo](https://ariproject9787.github.io/inventory/brownie2/)
+
 
 ## 🧰 Tech Stack
 
