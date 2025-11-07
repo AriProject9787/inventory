@@ -8,9 +8,9 @@ This project is a fully functional online food ordering and billing system desig
 - Admin and staff panel for inventory & order management & billing
 - Firebase backend for real-time updates
 
-
----
 [Live Demo](https://ariproject9787.github.io/inventory/brownie2/)
+---
+
 
 
 ## 🧰 Tech Stack
